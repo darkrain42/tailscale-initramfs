@@ -1,0 +1,64 @@
+#!/bin/sh
+
+#set -e
+
+PREREQ="udev"
+prereqs()
+{
+    echo "$PREREQ"
+}
+
+case $1 in
+    prereqs)
+        prereqs
+        exit 0
+        ;;
+esac
+
+[ -x /bin/tailscale ] || exit 0
+
+. /scripts/functions
+
+if [ -e /etc/tailscale/initramfs/config ]; then
+    . /etc/tailscale/initramfs/config
+fi
+
+if [ -z "${TAILSCALE_HOSTNAME-}" ]; then
+    if [ -f /etc/tailscale/initramfs/hostname ]; then
+        HOSTNAME=$(cat /etc/tailscale/initramfs/hostname)
+    else
+        HOSTNAME=$(hostname -s)
+    fi
+
+    TAILSCALE_HOSTNAME=${HOSTNAME}-initramfs
+fi
+
+# shellcheck disable=SC2039,SC2086
+run_tailscale()
+{
+    log_begin_msg "Starting tailscale"
+
+    local options="--state=/var/lib/tailscale/tailscaled.state --socket=/run/tailscale/tailscaled.sock"
+
+    # FIXME: This races with dropbear-initramfs bringing up the network
+    # asynchronously
+    [ "$BOOT" = nfs ] || configure_networking
+
+    # A little race-y to start the client before the daemon, but the client
+    # will attempt to connect to the socket for a while.
+    # https://github.com/tailscale/tailscale/blob/8cf1af8a0703c36256fc58e98ddb63b8907848f1/safesocket/safesocket.go#L119-L122
+    /bin/tailscale --socket=/run/tailscale/tailscaled.sock up --authkey="${TAILSCALE_AUTHKEY}" --hostname="${TAILSCALE_HOSTNAME}" $TAILSCALE_OPTIONS &
+
+    if [ "${debug:-}" != y ]; then
+        exec 2>/run/initramfs/tailscale.log
+    fi
+    exec /sbin/tailscaled $options $TAILSCALED_OPTIONS
+}
+
+[ "$BOOT" = nfs ] && configure_networking
+
+modprobe tun
+run_tailscale &
+echo $! > /run/tailscale.pid
+
+exit 0

@@ -1,0 +1,5 @@
+tailscale-initramfs (0.1) unstable; urgency=medium
+
+  * Initial Release.
+
+ -- Paul Aurich <paul@darkrain42.org>  Fri, 14 Jan 2022 21:03:16 -0800

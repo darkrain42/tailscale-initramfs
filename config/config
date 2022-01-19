@@ -1,0 +1,51 @@
+#
+# Configuration options for the tailscale-initramfs boot scripts.
+# You must run update-initramfs(8) to effect changes to this file (like
+# for other files in the '/etc/tailscale/initramfs' directory).
+
+#
+# Authkey to be used to authenticate to tailscale.  Passed to "tailscale up"
+# --authkey, so can also be file:/path/to/secret (the file will be copied into
+# the initramfs).
+#
+# Note that the config (and any key) is stored in the initramfs, which is
+# often outside of a cryptroot.
+# - https://tailscale.com/kb/1068/acl-tags/#generate-an-auth-key-with-an-acl-tag
+# - https://tailscale.com/kb/1111/ephemeral-nodes/
+#
+TAILSCALE_AUTHKEY=
+
+#
+# Hostname to pass to "tailscale up".
+# Default: ${HOSTNAME}-initramfs.
+#
+#TAILSCALE_HOSTNAME=
+
+#
+# Command-line options to pass to tailscale, in addition to
+# --authkey"${TAILSCALE_AUTHKEY}"
+# Default: none
+#
+#TAILSCALE_OPTIONS=
+
+#
+# Command-line options to pass to tailscaled
+# Default: none
+#
+#TAILSCALED_OPTIONS=
+
+#
+# Set to any non-empty string to log out of tailscale before passing out of
+# the initramfs. This is ineffective if some other package in the initramfs
+# (dropbear-initramfs) brings down the external interfaces.  See IFDOWN in
+# dropbear-initramfs's config.
+# Default: none
+#
+#TAILSCALE_LOGOUT=
+
+#
+# Bring down interfaces matching this pattern before passing out of the
+# initramfs.  (Same behavior as dropbear-initramfs)
+# Default: *
+#
+#IFDOWN=*

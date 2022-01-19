@@ -1,0 +1,65 @@
+#!/bin/sh
+
+PREREQ=""
+
+prereqs()
+{
+    echo "$PREREQ"
+}
+
+case $1 in
+    prereqs)
+        prereqs
+        exit 0
+        ;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+tailscale_warn() {
+    echo >&2 "tailscale: WARNING: $*"
+}
+tailscale_error() {
+    echo >&2 "tailscale: ERROR: $*"
+}
+
+RV=0
+
+copy_exec /usr/bin/tailscale bin
+copy_exec /usr/sbin/tailscaled sbin
+
+copy_exec /bin/ip bin
+copy_exec /usr/sbin/iptables sbin
+copy_exec /usr/sbin/ip6tables sbin
+
+copy_modules_dir kernel/net/ipv4/netfilter
+copy_modules_dir kernel/net/ipv6/netfilter
+copy_modules_dir kernel/net/netfilter
+manual_add_modules tun
+
+copy_file config /etc/ssl/certs/ca-certificates.crt
+copy_file config /etc/hostname /etc/tailscale/initramfs/hostname
+
+if [ -e /etc/tailscale/initramfs/config ]; then
+    cp -pt "$DESTDIR/etc/tailscale/initramfs" /etc/tailscale/initramfs/config
+    . /etc/tailscale/initramfs/config
+
+    case "${TAILSCALE_AUTHKEY-}" in
+        file:*)
+            AUTHKEY_FILE=${TAILSCALE_AUTHKEY#file:}
+            if [ -s "$AUTHKEY_FILE" ]; then
+                copy_file keyfile "$AUTHKEY_FILE"
+            else
+                tailscale_error "Auth key file '$AUTHKEY_FILE' does not exist or is empty."
+                RV=1
+            fi
+            ;;
+        "")
+            tailscale_warn "\$TAILSCALE_AUTHKEY not set; logging into tailscale won't work!"
+            ;;
+    esac
+else
+    tailscale_warn "Missing tailscale initramfs config; logging into tailscale won't work!"
+fi
+
+exit $RV

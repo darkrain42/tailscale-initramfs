@@ -1,0 +1,3 @@
+# Set the umask for the generated initramfs since it may contain a tailscale
+# authkey
+UMASK=0077

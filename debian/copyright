@@ -1,0 +1,24 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: tailscale-initramfs
+Upstream-Contact: Paul Aurich <paul@darkrain42.org>
+Source: https://github.com/darkrain42/tailscale-initramfs
+
+Files: *
+Copyright: 2022 Paul Aurich <paul@darkrain42.org>
+License: GPL-2+
+
+# Started from dropbear-initramfs scripts.
+Files: scripts/*
+Copyright: 2009  <debian@x.ray.net>
+           2015 Guilhem Moulin <guilhem@debian.org>
+           2022 Paul Aurich <paul@darkrain42.org>
+License: GPL-2+
+
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ The full text of version 2 of the GPL is distributed in
+ /usr/share/common-licenses/GPL-2 on Debian systems.

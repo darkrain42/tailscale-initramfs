@@ -1,0 +1,5 @@
+conf-hooks.d/tailscale usr/share/initramfs-tools/conf-hooks.d
+config/config etc/tailscale/initramfs
+hooks/tailscale usr/share/initramfs-tools/hooks
+scripts/init-bottom/tailscale usr/share/initramfs-tools/scripts/init-bottom
+scripts/init-premount/tailscale usr/share/initramfs-tools/scripts/init-premount

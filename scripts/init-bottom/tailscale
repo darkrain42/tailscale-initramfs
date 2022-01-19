@@ -1,0 +1,77 @@
+#!/bin/sh
+
+#set -e
+
+PREREQ=""
+prereqs()
+{
+    echo "$PREREQ"
+}
+
+case $1 in
+    prereqs)
+        prereqs
+        exit 0
+        ;;
+esac
+
+. /scripts/functions
+
+EXE="$(readlink -f /sbin/tailscaled)" && [ -f "$EXE" ] || exit 1
+PIDFILE="/run/tailscale.pid"
+TAILSCALE_SHUTDOWN_TIMEOUT=60
+TAILSCALE_LOGOUT=
+IFDOWN="*"
+
+if [ -e /etc/tailscale/initramfs/config ]; then
+    . /etc/tailscale/initramfs/config
+fi
+
+wait_for_tailscaled()
+{
+    # shellcheck disable=SC2039
+    # SC2039: In POSIX sh, 'local' is undefined.
+    local pid exe timer="$TAILSCALE_SHUTDOWN_TIMEOUT"
+    pid="$(cat "$PIDFILE" 2>/dev/null)" || return 1
+
+    while [ $timer -gt 0 ] && exe="$(readlink -f "/proc/$pid/exe" 2>/dev/null)"; do
+        if [ "$exe" = "$EXE" ]; then
+            echo "$pid"
+            return 0
+        fi
+        sleep 1
+        timer=$(( timer - 1 ))
+    done
+    return 1
+}
+
+
+if PID="$(wait_for_tailscaled)"; then
+    if [ -n "$TAILSCALE_LOGOUT" ]; then
+        log_begin_msg "Logging out of tailscale"
+        /bin/tailscale --socket=/run/tailscale/tailscaled.sock logout 2>>/run/initramfs/tailscale.log || true
+        log_end_msg
+    fi
+
+    log_begin_msg "Stopping tailscale"
+    kill -TERM "$PID"
+    wait "$PID" || true
+    /sbin/tailscaled -cleanup 2>>/run/initramfs/tailscale.log
+    log_end_msg
+fi
+
+rm -f "$PIDFILE"
+
+if [ "$BOOT" != nfs ] && [ "$IFDOWN" != none ]; then
+    for IFACE in /sys/class/net/$IFDOWN; do
+        [ -e "$IFACE" ] || continue
+        IFACE="${IFACE#/sys/class/net/}"
+        log_begin_msg "Bringing down $IFACE"
+        ip link    set   dev "$IFACE" down
+        ip address flush dev "$IFACE"
+        ip route   flush dev "$IFACE"
+        log_end_msg
+    done
+fi
+
+exit 0

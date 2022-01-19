@@ -1,0 +1,20 @@
+Source: tailscale-initramfs
+Section: net
+Priority: optional
+Maintainer: Paul Aurich <paul@darkrain42.org>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.5.1
+Homepage: https://github.com/darkrain42/tailscale-initramfs
+Vcs-Browser: https://github.com/darkrain42/tailscale-initramfs
+Vcs-Git: https://github.com/darkrain42/tailscale-initramfs.git
+Rules-Requires-Root: no
+
+Package: tailscale-initramfs
+Architecture: all
+Depends: initramfs-tools, tailscale, ${misc:Depends}
+Recommends: ca-certificates
+Suggests: dropbear-initramfs
+Description: tailscale VPN - third-party initramfs integration
+ tailscale is a WireGuard VPN. This package provides initramfs integration,
+ intended to allow connectivity to/from a tailnet, e.g. to to allow remote
+ unlocking of a cryptroot.

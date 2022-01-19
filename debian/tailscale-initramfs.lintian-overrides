@@ -1,0 +1,1 @@
+tailscale-initramfs: non-standard-file-perm etc/tailscale/initramfs/config 0600 != 0644
