@@ -33,7 +33,7 @@ if [ -z "${TAILSCALE_HOSTNAME-}" ]; then
     TAILSCALE_HOSTNAME=${HOSTNAME}-initramfs
 fi
 
-# shellcheck disable=SC2039,SC2086
+# shellcheck disable=SC2039,SC2086,SC3043
 run_tailscale()
 {
     log_begin_msg "Starting tailscale"

@@ -29,8 +29,8 @@ fi
 
 wait_for_tailscaled()
 {
-    # shellcheck disable=SC2039
-    # SC2039: In POSIX sh, 'local' is undefined.
+    # shellcheck disable=SC2039,SC3043
+    # SC3043: In POSIX sh, 'local' is undefined.
     local pid exe timer="$TAILSCALE_SHUTDOWN_TIMEOUT"
     pid="$(cat "$PIDFILE" 2>/dev/null)" || return 1
 
