@@ -1,0 +1,16 @@
+# Temporary/backup files from editors
+*~
+\#*\#
+.\#*
+.*.sw?
+.sw?
+
+.DS_Store
+
+# Debian package detritus
+/debian/.debhelper
+/debian/*-build-stamp
+/debian/files
+/debian/*.log
+/debian/*.substvars
+/debian/tailscale-initramfs/
