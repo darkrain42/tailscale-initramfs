@@ -1,6 +1,6 @@
 # tailscale-initramfs
 
-Run the [tailscale](https://tailscale.com)client in a Debian or Ubuntu
+Run the [tailscale](https://tailscale.com) client in a Debian or Ubuntu
 initramfs, to provide access to the Linux system prior to unlocking an encrypted
 root filesystem. For instance, when combined with
 [dropbear-initramfs](https://packages.debian.org/stable/dropbear-initramfs),
