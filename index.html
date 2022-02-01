@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>tailscale initramfs integration</title>
+</head>
+<body>
+    <div>
+        Run the <a href="https://tailscale.com">Tailscale client</a> in a Linux
+        initrd on Debian or Ubuntu.
+
+        <br/><a href="https://github.com/darkrain42/tailscale-initramfs">project
+            page</a>
+    </div>
+
+    <div>
+        <pre>
+# Add the repository
+sudo mkdir -p --mode=0755 /usr/share/local/keyrings
+curl -fsSL https://darkrain42.github.io/tailscale-initramfs/keyring.asc | sudo tee /usr/local/share/keyrings/tailscale-initramfs-keyring.asc &gt;/dev/null
+echo 'deb [signed-by=/usr/local/share/keyrings/tailscale-initramfs-keyring.asc] https://darkrain42.github.io/tailscale-initramfs/repo stable main' | sudo tee /etc/apt/sources.list.d/tailscale-initramfs.list &gt;/dev/null
+
+# Install tailscale-initramfs
+sudo apt-get update &amp;&amp; sudo apt-get install tailscale-initramfs</pre>
+        </pre>
+    </div>
+</body>
+</html>
