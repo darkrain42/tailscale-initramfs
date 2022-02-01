@@ -1,0 +1,22 @@
+---
+name: Add package to release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  add-deb-to-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          commit: ${{ github.sha }}
+
+      - name: Upload release artifact
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: deb
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

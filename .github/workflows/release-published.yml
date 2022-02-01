@@ -1,0 +1,34 @@
+---
+name: Publish to apt repository
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish-to-apt-repo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          commit: ${{ github.sha }}
+
+      - name: Release tailscale-initramfs on Github Pages repository
+        # peternewman/apt-repo-action@globs
+        uses: peternewman/apt-repo-action@ff037894ae6f9a6a40c56f0993d083adc23b7986
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_supported_arch: |
+            amd64
+            arm64
+            armhf
+            i386
+          repo_supported_version: stable
+          file: deb/tailscale-initramfs*.deb
+          file_target_version: stable
+          public_key: ${{ secrets.APT_SIGNING_PUBLIC }}
+          private_key: ${{ secrets.APT_SIGNING_PRIVATE }}
+          key_passphrase: ${{ secrets.APT_SIGNING_PASSPHRASE }}
+          debug: true

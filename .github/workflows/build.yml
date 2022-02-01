@@ -3,15 +3,14 @@ name: Build package
 
 on:
   push:
-    branches: [main]
+    branches: ['*']
   pull_request:
-    branches: [main]
+    branches: ['*']
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  build:
+  test-and-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,8 +27,8 @@ jobs:
           buildpackage-opts: --no-sign --check-command=lintian
           extra-build-deps: lintian
 
-      - name: Archive Debian artifacts
+      - name: Upload debian package as artifact
         uses: actions/upload-artifact@v2
         with:
-          name: package
+          name: deb
           path: debian/artifacts
