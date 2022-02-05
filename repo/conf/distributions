@@ -1,0 +1,7 @@
+Description: darkrain42/tailscale-initramfs
+Codename: stable
+Architectures: amd64 arm64 armhf i386
+Components: main
+SignWith: 4DF2A4AF7A9BA26ABD6A1B56F8C2E2293B012C04
+
+
