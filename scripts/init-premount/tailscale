@@ -19,6 +19,8 @@ esac
 
 . /scripts/functions
 
+PIDFILE="/run/tailscale.pid"
+
 if [ -e /etc/tailscale/initramfs/config ]; then
     . /etc/tailscale/initramfs/config
 fi
@@ -33,6 +35,16 @@ if [ -z "${TAILSCALE_HOSTNAME-}" ]; then
     TAILSCALE_HOSTNAME=${HOSTNAME}-initramfs
 fi
 
+network_up()
+{
+    for conf in /run/net-*.conf /run/net6-*.conf; do
+        if [ -e "$conf" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 # shellcheck disable=SC2039,SC2086,SC3043
 run_tailscale()
 {
@@ -42,7 +54,19 @@ run_tailscale()
 
     # FIXME: This races with dropbear-initramfs bringing up the network
     # asynchronously
-    [ "$BOOT" = nfs ] || configure_networking
+    if [ "$BOOT" != nfs ]; then
+        # Keep trying to bring up the network until it's up
+        # or the boot process continues toward finish.
+        while true; do
+            # "." builtin (in dash) exits on error. Run configure_networking
+            # in a subshell and wait for it.
+            configure_networking &
+            wait $!
+            if ! [ -e "$PIDFILE" ] || network_up; then
+                break
+            fi
+        done
+    fi
 
     # A little race-y to start the client before the daemon, but the client
     # will attempt to connect to the socket for a while.
@@ -59,6 +83,6 @@ run_tailscale()
 
 modprobe tun
 run_tailscale &
-echo $! > /run/tailscale.pid
+echo $! > "$PIDFILE"
 
 exit 0

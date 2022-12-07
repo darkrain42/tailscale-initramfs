@@ -33,6 +33,7 @@ wait_for_tailscaled()
     # SC3043: In POSIX sh, 'local' is undefined.
     local pid exe timer="$TAILSCALE_SHUTDOWN_TIMEOUT"
     pid="$(cat "$PIDFILE" 2>/dev/null)" || return 1
+    rm -f "$PIDFILE"
 
     while [ $timer -gt 0 ] && exe="$(readlink -f "/proc/$pid/exe" 2>/dev/null)"; do
         if [ "$exe" = "$EXE" ]; then
@@ -59,8 +60,6 @@ if PID="$(wait_for_tailscaled)"; then
     /sbin/tailscaled -cleanup 2>>/run/initramfs/tailscale.log
     log_end_msg
 fi
-
-rm -f "$PIDFILE"
 
 if [ "$BOOT" != nfs ] && [ "$IFDOWN" != none ]; then
     for IFACE in /sys/class/net/$IFDOWN; do

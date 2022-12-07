@@ -1,3 +1,10 @@
+tailscale-initramfs (0.2) unstable; urgency=medium
+
+  * Keep trying to bring up the network until it either comes up or the boot
+    process continues.
+
+ -- Paul Aurich <paul@darkrain42.org>  Tue, 06 Dec 2022 20:12:18 -0800
+
 tailscale-initramfs (0.1) unstable; urgency=medium
 
   * Initial Release.
