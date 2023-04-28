@@ -22,7 +22,7 @@ the rest of the tailnet.
 
 ```bash
 # Add the repository
-sudo mkdir -p --mode=0755 /usr/share/local/keyrings
+sudo mkdir -p --mode=0755 /usr/local/share/keyrings
 curl -fsSL https://darkrain42.github.io/tailscale-initramfs/keyring.asc | sudo tee /usr/local/share/keyrings/tailscale-initramfs-keyring.asc >/dev/null
 echo 'deb [signed-by=/usr/local/share/keyrings/tailscale-initramfs-keyring.asc] https://darkrain42.github.io/tailscale-initramfs/repo stable main' | sudo tee /etc/apt/sources.list.d/tailscale-initramfs.list >/dev/null
 
