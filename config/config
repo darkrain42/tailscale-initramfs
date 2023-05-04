@@ -44,6 +44,18 @@ TAILSCALE_AUTHKEY=
 #TAILSCALE_LOGOUT=
 
 #
+# Space-delimited list of DNS server(s) to put in /etc/resolv.conf in the
+# initramfs if /etc/resolv.conf doesn't exist and if no DNS servers were
+# returned from DHCP.
+#
+# Tailscale will eventually fall back to bootstrapping DNS itself, but there's
+# no reason to rely on that (adds a slight delay).  Tailscale's fallback is
+# also problematic in some corner cases in some versions (see
+# https://github.com/tailscale/tailscale/issues/6110).
+#
+#FALLBACK_DNS_SERVERS=
+
+#
 # Bring down interfaces matching this pattern before passing out of the
 # initramfs.  (Same behavior as dropbear-initramfs)
 # Default: *
