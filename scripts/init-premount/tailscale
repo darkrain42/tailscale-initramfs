@@ -39,10 +39,37 @@ network_up()
 {
     for conf in /run/net-*.conf /run/net6-*.conf; do
         if [ -e "$conf" ]; then
+            # shellcheck disable=SC1090
+            . "$conf"
             return 0
         fi
     done
     return 1
+}
+
+# shellcheck disable=SC3043
+create_resolv_conf()
+{
+    if [ -e /etc/resolv.conf ]; then
+        return
+    fi
+
+    local ns
+    for ns in "${IPV4DNS0:-}" "${IPV4DNS1:-}" "${IPV6DNS0:-}" "${IPV6DNS1:-}"; do
+        if [ -n "$ns" ] && [ "$ns" != "0.0.0.0" ]; then
+            echo "nameserver $ns" >> /etc/resolv.conf
+        fi
+    done
+
+    if [ -e /etc/resolv.conf ]; then
+        return
+    fi
+
+    for ns in ${FALLBACK_DNS_SERVERS:-}; do
+        if [ -n "$ns" ]; then
+            echo "nameserver $ns" >> /etc/resolv.conf
+        fi
+    done
 }
 
 # shellcheck disable=SC2039,SC2086,SC3043
@@ -62,7 +89,11 @@ run_tailscale()
             # in a subshell and wait for it.
             configure_networking &
             wait $!
-            if ! [ -e "$PIDFILE" ] || network_up; then
+            if ! [ -e "$PIDFILE" ]; then
+                break
+            fi
+            if network_up; then
+                create_resolv_conf
                 break
             fi
         done
