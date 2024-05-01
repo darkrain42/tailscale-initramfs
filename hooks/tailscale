@@ -31,7 +31,6 @@ copy_exec /usr/sbin/tailscaled sbin
 copy_exec /bin/ip bin
 copy_exec /usr/sbin/iptables sbin
 copy_exec /usr/sbin/ip6tables sbin
-copy_exec /usr/bin/getent bin
 
 for mod in /usr/lib/@DEB_HOST_MULTIARCH@/xtables/*.so; do
     copy_exec "$mod"
@@ -46,8 +45,9 @@ copy_file config /etc/ssl/certs/ca-certificates.crt
 copy_file config /etc/hostname /etc/tailscale/initramfs/hostname
 
 if [ -z "${TAILSCALE_DISABLE_SSH:-}" ]; then
-    # Create root user/group for 'tailscale ssh', if another hook (i.e. dropbear)
-    # hasn't
+    copy_exec /usr/bin/getent bin
+
+    # Create root user/group for 'tailscale ssh', if another hook (i.e. dropbear) hasn't
     if ! grep -sq '^root:' "$DESTDIR/etc/passwd"; then
         home="$(mktemp --directory -- "$DESTDIR/root-XXXXXXXXXX")"
         chmod 0700 -- "$home"
