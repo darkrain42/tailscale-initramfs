@@ -8,10 +8,12 @@
 # --authkey, so can also be file:/path/to/secret (the file will be copied into
 # the initramfs).
 #
-# Note that the config (and any key) is stored in the initramfs, which is
-# often outside of a cryptroot.
 # - https://tailscale.com/kb/1068/acl-tags/#generate-an-auth-key-with-an-acl-tag
 # - https://tailscale.com/kb/1111/ephemeral-nodes/
+#
+# Note: The authkey (like this config file) is stored in the initramfs. If
+# you're using disk encryption (LUKS), the initramfs is stored *unencrypted* in
+# the boot partition.
 #
 TAILSCALE_AUTHKEY=
 
@@ -35,8 +37,17 @@ TAILSCALE_AUTHKEY=
 #TAILSCALED_OPTIONS=
 
 #
-# Set to any non-empty string to log out of tailscale before passing out of
-# the initramfs. This is ineffective if some other package in the initramfs
+# Set to any non-empty string to disable tailscale SSH
+# - https://tailscale.com/kb/1193/tailscale-ssh
+# Default: none
+#
+#TAILSCALE_DISABLE_SSH=
+
+#
+# Set to any non-empty string to log out of tailscale before exiting out of
+# the initramfs and continuing to boot the system.
+#
+# This is ineffective if some other package in the initramfs
 # (dropbear-initramfs) brings down the external interfaces.  See IFDOWN in
 # dropbear-initramfs's config.
 # Default: none
@@ -50,7 +61,7 @@ TAILSCALE_AUTHKEY=
 #
 # Tailscale will eventually fall back to bootstrapping DNS itself, but there's
 # no reason to rely on that (adds a slight delay).  Tailscale's fallback is
-# also problematic in some corner cases in some versions (see
+# also problematic in some corner cases in some older versions (see
 # https://github.com/tailscale/tailscale/issues/6110).
 #
 #FALLBACK_DNS_SERVERS=

@@ -2,6 +2,8 @@ tailscale-initramfs (0.4) UNRELEASED; urgency=medium
 
   * Copy the iptables userspace modules into the initramfs, so that tailscale
     is able to update iptables rules.
+  * Add Tailscale SSH support (allow tailscale to run its SSH server in the
+    initramfs).
 
  -- Paul Aurich <paul@darkrain42.org>  Thu, 16 May 2024 19:20:32 -0700
 

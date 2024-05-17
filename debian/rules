@@ -12,6 +12,6 @@ execute_after_dh_fixperms:
 	chmod 600 debian/tailscale-initramfs/etc/tailscale/initramfs/config
 
 override_dh_builddeb:
-	# Workaround for building on Ubuntu and installing on Debian (Ubuntu uses
-	# zstd). https://bugs.debian.org/892664
+	# Workaround for building on Ubuntu and installing on Debian prior to
+	# Bookworm (Ubuntu uses zstd). https://bugs.debian.org/892664
 	dh_builddeb -- -Zxz

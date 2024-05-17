@@ -44,6 +44,21 @@ manual_add_modules tun
 copy_file config /etc/ssl/certs/ca-certificates.crt
 copy_file config /etc/hostname /etc/tailscale/initramfs/hostname
 
+if [ -z "${TAILSCALE_DISABLE_SSH:-}" ]; then
+    copy_exec /usr/bin/getent bin
+
+    # Create root user/group for 'tailscale ssh', if another hook (i.e. dropbear) hasn't
+    if ! grep -sq '^root:' "$DESTDIR/etc/passwd"; then
+        home="$(mktemp --directory -- "$DESTDIR/root-XXXXXXXXXX")"
+        chmod 0700 -- "$home"
+        echo "root:x:0:0:root:${home#"$DESTDIR"}:/bin/sh" >> "$DESTDIR/etc/passwd"
+    fi
+
+    if ! grep -sq '^root:' "$DESTDIR/etc/group"; then
+        echo "root:x:0:" >> "$DESTDIR/etc/group"
+    fi
+fi
+
 if [ -e /etc/tailscale/initramfs/config ]; then
     cp -pt "$DESTDIR/etc/tailscale/initramfs" /etc/tailscale/initramfs/config
     . /etc/tailscale/initramfs/config
