@@ -1,8 +1,9 @@
 # tailscale-initramfs
 
 Run the [tailscale](https://tailscale.com) client in a Debian or Ubuntu
-initramfs, to provide access to the Linux system prior to unlocking an encrypted
-root filesystem. For instance, when combined with
+initramfs, to provide access to the Linux system prior to unlocking an
+encrypted root filesystem. When combined with [tailscale
+ssh](https://tailscale.com/kb/1193/tailscale-ssh) or
 [dropbear-initramfs](https://packages.debian.org/stable/dropbear-initramfs),
 allows remote unlocking of an encrypted root filesystem from other systems in
 the tailnet.
@@ -12,7 +13,8 @@ key](https://tailscale.com/kb/1085/auth-keys/) to log into your tailnet.  Assign
 an [ACL
 tag](https://tailscale.com/kb/1068/acl-tags/#generate-an-auth-key-with-an-acl-tag
 ) to that auth key to lock down what access the pre-boot environment can have to
-the rest of the tailnet.
+the rest of the tailnet, i.e. to disallow all outbound access from the
+initramfs, and only permit inbound connections.
 
 ## Install
 
@@ -46,3 +48,9 @@ update-initramfs -c -k all
   the initramfs will show up as the existing device on the tailnet, but means
   the private key material is stored in the initramfs (which is commonly
   unencrypted).
+
+* [tailscale-initramfs by Lugoues](https://github.com/Lugoues/tailscale-initramfs)
+
+  Similar to this package, but registers the initrd as a tailscale device when
+  you configure the package.  The initrd device will be present in the tailnet
+  all the time.
