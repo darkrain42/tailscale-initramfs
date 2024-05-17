@@ -1,19 +1,19 @@
 Package: tailscale-initramfs
-Version: 0.3
+Version: 0.4
 Architecture: all
 Maintainer: Paul Aurich <paul@darkrain42.org>
-Installed-Size: 32
+Installed-Size: 34
 Depends: initramfs-tools, tailscale
 Recommends: ca-certificates
 Suggests: dropbear-initramfs
 Homepage: https://github.com/darkrain42/tailscale-initramfs
 Priority: optional
 Section: net
-Filename: pool/main/t/tailscale-initramfs/tailscale-initramfs_0.3_all.deb
-Size: 5264
-SHA256: 5d66e6f8302885b92fff164cef641cbd38cf57b10b8dd72c3ef833b29b24e39b
-SHA1: 3a79ce55d8c0d628b6d9a35ea19595d337626f70
-MD5sum: 0f913e0e35d177991383f64d7fabfc6a
+Filename: pool/main/t/tailscale-initramfs/tailscale-initramfs_0.4_all.deb
+Size: 5688
+SHA256: 3a052744948feb1c4b5073bd19704d582371f1074f6448d54ee5d328935426b1
+SHA1: f748c243d86f8b2444e560274783f778c54d143a
+MD5sum: c7642264802f61f8ee709ca934af91e1
 Description: tailscale VPN - third-party initramfs integration
  tailscale is a WireGuard VPN. This package provides initramfs integration,
  intended to allow connectivity to/from a tailnet, e.g. to to allow remote
