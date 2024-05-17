@@ -35,6 +35,13 @@ TAILSCALE_AUTHKEY=
 #TAILSCALED_OPTIONS=
 
 #
+# Set to any non-empty string to disable tailscale SSH
+# - https://tailscale.com/kb/1193/tailscale-ssh
+# Default: none
+#
+#TAILSCALE_DISABLE_SSH=
+
+#
 # Set to any non-empty string to log out of tailscale before passing out of
 # the initramfs. This is ineffective if some other package in the initramfs
 # (dropbear-initramfs) brings down the external interfaces.  See IFDOWN in
