@@ -32,6 +32,10 @@ copy_exec /bin/ip bin
 copy_exec /usr/sbin/iptables sbin
 copy_exec /usr/sbin/ip6tables sbin
 
+for mod in /usr/lib/@DEB_HOST_MULTIARCH@/xtables/*.so; do
+    copy_exec "$mod"
+done
+
 copy_modules_dir kernel/net/ipv4/netfilter
 copy_modules_dir kernel/net/ipv6/netfilter
 copy_modules_dir kernel/net/netfilter

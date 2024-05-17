@@ -5,6 +5,9 @@
 %:
 	dh $@
 
+execute_after_dh_install:
+	sed -i -e 's,@DEB_HOST_MULTIARCH@,$(DEB_HOST_MULTIARCH),g' debian/tailscale-initramfs/usr/share/initramfs-tools/hooks/tailscale
+
 execute_after_dh_fixperms:
 	chmod 600 debian/tailscale-initramfs/etc/tailscale/initramfs/config
 

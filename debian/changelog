@@ -1,3 +1,10 @@
+tailscale-initramfs (0.4) UNRELEASED; urgency=medium
+
+  * Copy the iptables userspace modules into the initramfs, so that tailscale
+    is able to update iptables rules.
+
+ -- Paul Aurich <paul@darkrain42.org>  Thu, 16 May 2024 19:20:32 -0700
+
 tailscale-initramfs (0.3) unstable; urgency=medium
 
   * Configure resolv.conf in initramfs if it isn't already, so the tailscale
