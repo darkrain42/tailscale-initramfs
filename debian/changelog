@@ -1,9 +1,9 @@
-tailscale-initramfs (0.5) UNRELEASED; urgency=medium
+tailscale-initramfs (0.5) unstable; urgency=medium
 
   * Copy the iptables userspace modules in an architecture-independent
     fashion.
 
- -- Paul Aurich <paul@darkrain42.org>  Sat, 18 May 2024 11:52:37 -0700
+ -- Paul Aurich <paul@darkrain42.org>  Sat, 18 May 2024 12:51:54 -0700
 
 tailscale-initramfs (0.4) unstable; urgency=medium
 
