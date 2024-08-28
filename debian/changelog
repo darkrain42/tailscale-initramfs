@@ -1,9 +1,9 @@
-tailscale-initramfs (0.6) UNRELEASED; urgency=medium
+tailscale-initramfs (0.6) unstable; urgency=medium
 
   * Ensure proper functioning of "tailscale ssh" functionality when
     dropbear-initramfs is also installed.
 
- -- Paul Aurich <paul@darkrain42.org>  Tue, 27 Aug 2024 19:36:32 -0700
+ -- Paul Aurich <paul@darkrain42.org>  Tue, 27 Aug 2024 19:58:06 -0700
 
 tailscale-initramfs (0.5) unstable; urgency=medium
 
