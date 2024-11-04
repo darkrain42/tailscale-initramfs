@@ -47,6 +47,42 @@ sudo apt-get update && sudo apt-get install tailscale-initramfs
 update-initramfs -c -k all
 ```
 
+## Security
+
+If you're using full disk encryption (i.e. LUKS), the initramfs is typically
+unencrypted alongside the boot loader.  The auth key you configure for this
+package is included in that initramfs in plaintext.  Someone who can access
+the initramfs file can get a copy of the auth key and register new devices
+into the tailnet as long as the key is valid.
+
+You can restrict what access such devices have by configuring [Tailscale
+ACLs](https://login.tailscale.com/admin/acls/) that prevent these devices from
+making any connections, and only accepting incoming connections.
+
+### Example ACLs
+```json
+{
+	"tagOwners": {
+		"tag:initramfs": [],
+	},
+	"acls": [
+		{"action": "accept", "src": ["autogroup:member"], "dst": ["*:*"]},
+	],
+	"tests": [
+		// initramfs tag cannot make any outbound connections
+		{
+			"src":  "tag:initramfs",
+			"deny": ["100.101.102.103:22", "192.0.2.1:22", "[2001:db8::feed]:22"],
+		},
+		// but users can connect to the initramfs
+		{
+			"src":   "user@example.com",
+			"allow": ["tag:initramfs:22"],
+		},
+	],
+}
+```
+
 ## Alternatives
 
 * [initramfs-tools-tailscale](https://github.com/mabels/initramfs-tools-tailscale/)
