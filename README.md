@@ -16,6 +16,13 @@ tag](https://tailscale.com/kb/1068/acl-tags/#generate-an-auth-key-with-an-acl-ta
 the rest of the tailnet, i.e. to disallow all outbound access from the
 initramfs, and only permit inbound connections.
 
+**Caution**: The initramfs tailscale instance cannot log in your tailnet after
+the auth key expires, so the pre-boot environment won't be accessible from
+your tailnet.  Tailscale auth keys are only valid for up to 90 days,
+configured when generating the auth key.  To avoid losing access to the
+pre-boot environment, make sure you create a new auth key and update the
+initramfs before the old key expires.
+
 ## Install
 
 0. Requires tailscale already be [installed](https://pkgs.tailscale.com/stable/)
