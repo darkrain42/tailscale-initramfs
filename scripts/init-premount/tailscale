@@ -90,12 +90,21 @@ run_tailscale()
         # or the boot process continues toward finish.
         while true; do
             # "." builtin (in dash) exits on error. Run configure_networking
-            # in a subshell and wait for it.
+            # in a subshell and wait for it. Poll PIDFILE while waiting so we
+            # can exit promptly if init-bottom signals boot is continuing.
             configure_networking &
-            wait $!
-            if ! [ -e "$PIDFILE" ]; then
-                break
-            fi
+            net_pid=$!
+            while kill -0 $net_pid 2>/dev/null; do
+                if ! [ -e "$PIDFILE" ]; then
+                    kill $net_pid 2>/dev/null
+                    wait $net_pid 2>/dev/null
+                    log_end_msg
+                    exit 0
+                fi
+                sleep 1
+            done
+            wait $net_pid
+
             if network_up; then
                 create_resolv_conf
                 break
