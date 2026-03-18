@@ -1,4 +1,6 @@
 #!/bin/sh
+# shellcheck disable=SC2039,SC3043
+# SC3043: In POSIX sh, 'local' is undefined.
 
 #set -e
 
@@ -33,8 +35,6 @@ fi
 #    - the configurable TAILSCALE_SHUTDOWN_TIMEOUT to be hit
 wait_for_tailscaled()
 {
-    # shellcheck disable=SC2039,SC3043
-    # SC3043: In POSIX sh, 'local' is undefined.
     local pid exe timer="$TAILSCALE_SHUTDOWN_TIMEOUT"
     pid="$(cat "$PIDFILE" 2>/dev/null)" || return 1
     # Remove pidfile to signal to init-premount (if it's still waiting for
@@ -52,6 +52,21 @@ wait_for_tailscaled()
     return 1
 }
 
+wait_for_exit()
+{
+    local pid="$1" exe timer="$TAILSCALE_SHUTDOWN_TIMEOUT"
+    while [ $timer -gt 0 ]; do
+        exe="$(readlink -f "/proc/$pid/exe" 2>/dev/null)" || return 0
+        if [ "$exe" != "$EXE" ]; then
+            return 0
+        fi
+        sleep 1
+        timer=$(( timer - 1))
+    done
+    log_warning_msg "tailscaled (pid $pid) did not exit within ${TAILSCALE_SHUTDOWN_TIMEOUT}s"
+    return 1
+}
+
 
 if PID="$(wait_for_tailscaled)"; then
     if [ -n "$TAILSCALE_LOGOUT" ]; then
@@ -62,7 +77,7 @@ if PID="$(wait_for_tailscaled)"; then
 
     log_begin_msg "Stopping tailscale"
     kill -TERM "$PID"
-    wait "$PID" || true
+    wait_for_exit "$PID" || true
     /sbin/tailscaled -cleanup 2>>/run/initramfs/tailscale.log
     log_end_msg
 fi
