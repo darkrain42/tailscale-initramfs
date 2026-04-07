@@ -1,3 +1,12 @@
+tailscale-initramfs (0.7) unstable; urgency=medium
+
+  * Do not leave orphaned processes when the network is unavailable and the
+    boot proceeds (i.e. unlocked locally). (Leonard Lausen, GH PR #11)
+  * After signaling tailscaled to shutdown, properly wait for that to happen
+    before proceedign with the boot sequence.
+
+ -- Paul Aurich <paul@darkrain42.org>  Mon, 06 Apr 2026 20:35:19 -0700
+
 tailscale-initramfs (0.6) unstable; urgency=medium
 
   * Ensure proper functioning of "tailscale ssh" functionality when
