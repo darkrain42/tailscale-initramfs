@@ -2,6 +2,10 @@
 <html>
 <head>
     <title>tailscale initramfs integration</title>
+
+    <style>
+        pre { white-space: pre-wrap; }
+    </style>
 </head>
 <body>
     <div>
@@ -14,12 +18,19 @@
 
     <div>
         <pre>
-# Add the repository
-sudo mkdir -p --mode=0755 /usr/share/local/keyrings
+# Step 1. Fetch the public key that signs the repository
+sudo mkdir -p --mode=0755 /usr/local/share/keyrings
 curl -fsSL https://darkrain42.github.io/tailscale-initramfs/keyring.asc | sudo tee /usr/local/share/keyrings/tailscale-initramfs-keyring.asc &gt;/dev/null
+
+# Step 2 (on Debian v12 or Ubuntu 24.04 or newer), create an
+# /etc/apt/sources.list.d/tailscale-initramfs.sources file:
+
+echo -e 'Types: deb\nURIs: https://darkrain42.github.io/tailscale-initramfs/repo\nSuites: stable\nComponents: main\nX-Repolib-Name: tailscale-initramfs\nSigned-By: /usr/local/share/keyrings/tailscale-initramfs-keyring.asc' | sudo tee /etc/apt/sources.list.d/tailscale-initramfs.sources &gt;/dev/null
+
+# Step 2 (older systems). Or create an /etc/apt/sources.list.d/tailscale-initramfs.list
 echo 'deb [signed-by=/usr/local/share/keyrings/tailscale-initramfs-keyring.asc] https://darkrain42.github.io/tailscale-initramfs/repo stable main' | sudo tee /etc/apt/sources.list.d/tailscale-initramfs.list &gt;/dev/null
 
-# Install tailscale-initramfs
+# Step 3. Install tailscale-initramfs
 sudo apt-get update &amp;&amp; sudo apt-get install tailscale-initramfs</pre>
         </pre>
     </div>
