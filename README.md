@@ -30,12 +30,19 @@ initramfs before the old key expires.
 1. Install tailscale-initramfs package
 
 ```bash
-# Add the repository
+# Step 1. Fetch the public key that signs the repository
 sudo mkdir -p --mode=0755 /usr/local/share/keyrings
 curl -fsSL https://darkrain42.github.io/tailscale-initramfs/keyring.asc | sudo tee /usr/local/share/keyrings/tailscale-initramfs-keyring.asc >/dev/null
+
+# Step 2 (on Debian v12 or Ubuntu 24.04 or newer), create an
+# /etc/apt/sources.list.d/tailscale-initramfs.sources file:
+
+echo -e 'Types: deb\nURIs: https://darkrain42.github.io/tailscale-initramfs/repo\nSuites: stable\nComponents: main\nX-Repolib-Name: tailscale-initramfs\nSigned-By: /usr/local/share/keyrings/tailscale-initramfs-keyring.asc' | sudo tee /etc/apt/sources.list.d/tailscale-initramfs.sources >/dev/null
+
+# Step 2 (older systems). Or create an /etc/apt/sources.list.d/tailscale-initramfs.list
 echo 'deb [signed-by=/usr/local/share/keyrings/tailscale-initramfs-keyring.asc] https://darkrain42.github.io/tailscale-initramfs/repo stable main' | sudo tee /etc/apt/sources.list.d/tailscale-initramfs.list >/dev/null
 
-# Install tailscale-initramfs
+# Step 3. Install tailscale-initramfs
 sudo apt-get update && sudo apt-get install tailscale-initramfs
 ```
 
