@@ -65,9 +65,20 @@ making any connections, and only accepting incoming connections.
 	"tagOwners": {
 		"tag:initramfs": [],
 	},
-	"acls": [
-		{"action": "accept", "src": ["autogroup:member"], "dst": ["*:*"]},
+	"groups": {
+		"group:sshadmins": ["user@example.com"],
+	},
+	"grants": [
+		{
+			"src": ["autogroup:member"],
+			"dst": ["*"],
+			"ip": ["*"],
+		},
 	],
+	// Equivalent deprecated ACLs to the above grants
+	// "acls": [
+	//     {"action": "accept", "src": ["autogroup:member"], "dst": ["*:*"]},
+	// ],
 	"tests": [
 		// initramfs tag cannot make any outbound connections
 		{
@@ -78,6 +89,34 @@ making any connections, and only accepting incoming connections.
 		{
 			"src":   "user@example.com",
 			"allow": ["tag:initramfs:22"],
+		},
+	],
+	"ssh": [
+		{
+			"action": "check",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+		{
+			"action": "check",
+			"src":    ["group:sshadmins"],
+			"dst":    ["tag:initramfs"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+	],
+	"sshTests": [
+		// initramfs tag cannot SSH anywhere.
+		{
+			"src":  "tag:initramfs",
+			"dst":  ["100.101.102.103", "192.0.2.1", "2001:db8::feed"],
+			"deny": ["*"],
+		},
+		// but users (in group:sshadmins) can SSH to the initramfs tag
+		{
+			"src":   "user@example.com",
+			"dst":   ["tag:initramfs"],
+			"check": ["root", "otters"],
 		},
 	],
 }
