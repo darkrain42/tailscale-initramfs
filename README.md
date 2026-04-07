@@ -60,7 +60,7 @@ ACLs](https://login.tailscale.com/admin/acls/) that prevent these devices from
 making any connections, and only accepting incoming connections.
 
 ### Example ACLs
-```json
+```jsonc
 {
 	"tagOwners": {
 		"tag:initramfs": [],
